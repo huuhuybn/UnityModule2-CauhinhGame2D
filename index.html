@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Danh sách bài học khóa học Unity 2D">
+    <title>Unity 2D Masterclass | Menu Bài Học</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #080312;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-1: #8b5cf6; /* Violet */
+            --accent-2: #ec4899; /* Pink */
+            --accent-gradient: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --glass-blur: blur(16px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.08), transparent 30%),
+                radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.05), transparent 30%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 5rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            background: rgba(139, 92, 246, 0.1);
+            color: #c4b5fd;
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+        }
+
+        .hero-desc {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 6rem;
+        }
+
+        .course-card {
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .course-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 
+                        0 0 20px rgba(139, 92, 246, 0.2);
+            border-color: rgba(139, 92, 246, 0.4);
+        }
+
+        .course-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .course-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .course-card p {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            flex-grow: 1;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            background: var(--accent-gradient);
+            color: #fff;
+            text-decoration: none;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+
+        .btn.blue {
+            background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+        }
+        
+        .btn.orange {
+            background: linear-gradient(135deg, #fbbf24, #ea580c);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: slideUp 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #glow {
+            position: fixed;
+            width: 40vw;
+            height: 40vw;
+            background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, rgba(0,0,0,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            transition: width 0.2s, height 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <div id="glow"></div>
+
+    <div class="container">
+        <header>
+            <div class="badge">Hệ thống giáo trình</div>
+            <h1>Unity 2D Masterclass</h1>
+            <p class="hero-desc">Lựa chọn bài học bên dưới để bắt đầu hành trình xây dựng tựa game 2D chuyên nghiệp của bạn.</p>
+        </header>
+
+        <section class="course-grid">
+            <div class="course-card" style="animation-delay: 0.1s">
+                <div class="course-icon">🎮</div>
+                <h3>1. Sprite Atlas</h3>
+                <p>Nghiên cứu về kỹ thuật đóng gói Texture trong Unity. Học cách sử dụng Sprite Atlas để tối ưu hóa hiệu năng, giảm số lượng Draw Calls cho dự án 2D.</p>
+                <a href="sprite_atlas_lesson.html" class="btn blue">Vào học ngay</a>
+            </div>
+
+            <div class="course-card" style="animation-delay: 0.2s">
+                <div class="course-icon">🌅</div>
+                <h3>2. 2D URP & Lighting</h3>
+                <p>Khám phá cách thiết lập Universal Render Pipeline cho Project 2D. Ứng dụng hệ thống Ánh sáng động (Dynamic Lighting) và Bóng đổ 2D (Shadows) trên phiên bản Unity 6000.5.</p>
+                <a href="urp_2d_lighting_lesson.html" class="btn orange">Vào học ngay</a>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.course-card').forEach((el) => {
+            observer.observe(el);
+        });
+
+        const glow = document.getElementById('glow');
+        document.addEventListener('mousemove', (e) => {
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
+    </script>
+</body>
+</html>

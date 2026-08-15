@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Bài học toàn diện về Unity Sprite Atlas: Là gì, Ở đâu, Khi nào, Tại sao và Hướng dẫn từng bước.">
+    <title>Unity Sprite Atlas | Bài học Tương tác</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-1: #00d2ff;
+            --accent-2: #3a7bd5;
+            --accent-gradient: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --glass-blur: blur(16px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(0, 210, 255, 0.05), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(58, 123, 213, 0.05), transparent 25%);
+            background-attachment: fixed;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        /* Hero Section */
+        header {
+            text-align: center;
+            margin-bottom: 6rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            background: rgba(0, 210, 255, 0.1);
+            color: var(--accent-1);
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(0, 210, 255, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+        }
+
+        .hero-desc {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* 4W Grid Section */
+        .grid-4w {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 6rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent-gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 
+                        0 0 20px rgba(0, 210, 255, 0.1);
+            border-color: rgba(0, 210, 255, 0.3);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+        /* Dos and Don'ts Section */
+        .dos-donts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 6rem;
+        }
+
+        .do-card, .dont-card {
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .do-card {
+            border-top: 4px solid #10b981; /* Emerald/Green */
+        }
+
+        .dont-card {
+            border-top: 4px solid #ef4444; /* Red */
+        }
+
+        .do-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.15);
+        }
+
+        .dont-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.15);
+        }
+
+        .icon-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .icon-header .icon {
+            font-size: 2rem;
+        }
+
+        .icon-header h3 {
+            font-size: 1.5rem;
+            color: #fff;
+            margin: 0;
+        }
+
+        .dos-donts ul {
+            list-style: none;
+        }
+
+        .dos-donts li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-muted);
+        }
+
+        .dos-donts li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--text-light);
+            font-weight: bold;
+        }
+
+        /* Comparison Section */
+        .comparison-section {
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--card-border);
+            border-radius: 32px;
+            padding: 4rem;
+            margin-bottom: 6rem;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .compare-desc {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        .compare-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .compare-card {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .compare-card.before {
+            border-top: 4px solid #ef4444;
+        }
+
+        .compare-card.after {
+            border-top: 4px solid #10b981;
+        }
+
+        .compare-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .compare-header h3 {
+            margin: 0;
+            font-size: 1.4rem;
+        }
+
+        .badge-red {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-green {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+        }
+
+        .stat-value {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .text-red { color: #ef4444; }
+        .text-green { color: #10b981; }
+
+        .stat-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .stat-bar .fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease-in-out;
+        }
+
+        .stat-bar .fill.red { background: #ef4444; }
+        .stat-bar .fill.green { background: #10b981; }
+
+        .vs-badge {
+            background: var(--bg-dark);
+            border: 2px solid var(--card-border);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: var(--text-muted);
+            z-index: 2;
+        }
+
+        @media (max-width: 768px) {
+            .compare-grid {
+                grid-template-columns: 1fr;
+            }
+            .vs-badge {
+                margin: 0 auto;
+                transform: rotate(90deg);
+            }
+        }
+
+        /* Step by Step Section */
+        .how-to {
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--card-border);
+            border-radius: 32px;
+            padding: 4rem;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 24px;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--accent-1), var(--accent-2));
+            opacity: 0.3;
+        }
+
+        .step {
+            position: relative;
+            padding-left: 80px;
+            margin-bottom: 3rem;
+        }
+
+        .step:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-number {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 50px;
+            height: 50px;
+            background: var(--bg-dark);
+            border: 2px solid var(--accent-1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-1);
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.2);
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .step:hover .step-number {
+            background: var(--accent-gradient);
+            color: #fff;
+            border-color: transparent;
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
+        }
+
+        .step h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .step p {
+            color: var(--text-muted);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: slideUp 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .how-to { padding: 2rem; }
+            .timeline::before { left: 20px; }
+            .step { padding-left: 60px; }
+            .step-number { width: 40px; height: 40px; font-size: 1.2rem; }
+        }
+
+        /* Glow effect mouse tracking */
+        #glow {
+            position: fixed;
+            width: 40vw;
+            height: 40vw;
+            background: radial-gradient(circle, rgba(58,123,213,0.15) 0%, rgba(0,0,0,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            transition: width 0.2s, height 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <div id="glow"></div>
+
+    <div class="container">
+        <header>
+            <div class="badge">Khóa học Unity 2D</div>
+            <h1>Sprite Atlas</h1>
+            <p class="hero-desc">Tối ưu hóa hiệu năng render cho game của bạn bằng cách kết hợp nhiều texture thành một tài nguyên duy nhất và mạnh mẽ.</p>
+        </header>
+
+        <section class="grid-4w">
+            <div class="card" style="animation-delay: 0.1s">
+                <div class="card-icon">❓</div>
+                <h3>Nó là gì?</h3>
+                <p>Sprite Atlas là một tài nguyên đặc biệt giúp tự động đóng gói nhiều texture Sprite riêng lẻ thành một bản đồ texture (texture map) tổng hợp duy nhất.</p>
+            </div>
+            <div class="card" style="animation-delay: 0.2s">
+                <div class="card-icon">🎯</div>
+                <h3>Tại sao nên dùng?</h3>
+                <p>Nó giúp cải thiện hiệu năng đáng kể bằng cách giảm số lượng draw calls. Thay vì GPU phải vẽ từng hình ảnh nhỏ một, nó chỉ cần vẽ một hình ảnh lớn trong một lần xử lý duy nhất.</p>
+            </div>
+            <div class="card" style="animation-delay: 0.3s">
+                <div class="card-icon">⏱️</div>
+                <h3>Khi nào cần dùng?</h3>
+                <p>Sử dụng khi dự án của bạn có nhiều thành phần UI 2D, nhân vật, hoặc tile môi trường xuất hiện trên màn hình cùng một lúc.</p>
+            </div>
+            <div class="card" style="animation-delay: 0.4s">
+                <div class="card-icon">📂</div>
+                <h3>Quản lý ở đâu?</h3>
+                <p>Nó tồn tại dưới dạng một Asset trong cửa sổ Project. Sau khi cấu hình, Unity sẽ tự động lo phần phức tạp—bạn chỉ cần tiếp tục sử dụng các sprite gốc như bình thường.</p>
+            </div>
+        </section>
+
+        <section class="dos-donts">
+            <div class="do-card">
+                <div class="icon-header">
+                    <span class="icon">✅</span>
+                    <h3>Nên dùng khi:</h3>
+                </div>
+                <ul>
+                    <li>Có nhiều hình ảnh UI nhỏ (icon, button, panel) lặp lại liên tục.</li>
+                    <li>Sử dụng các nhân vật 2D có nhiều khung hình hoạt ảnh (spritesheet).</li>
+                    <li>Cần tối ưu hiệu suất, giảm draw calls cho nền tảng di động (Mobile).</li>
+                </ul>
+            </div>
+            <div class="dont-card" style="animation-delay: 0.1s">
+                <div class="icon-header">
+                    <span class="icon">❌</span>
+                    <h3>Không nên dùng khi:</h3>
+                </div>
+                <ul>
+                    <li>Các texture có kích thước quá lớn (ví dụ: hình nền toàn màn hình) vì sẽ gây lãng phí bộ nhớ vô ích.</li>
+                    <li>Các hình ảnh rất hiếm khi xuất hiện cùng lúc với nhau trên màn hình (gây tốn RAM tải những thứ không cần thiết).</li>
+                    <li>Dự án đang trong giai đoạn prototype nháp, hình ảnh thay đổi liên tục mỗi ngày (để tránh mất thời gian build atlas).</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="comparison-section">
+            <h2 class="section-title">Ví dụ So sánh Hiệu năng</h2>
+            <p class="compare-desc">Trường hợp thực tế: Hiển thị <strong>100 Icon UI khác nhau</strong> lên cùng một màn hình.</p>
+            
+            <div class="compare-grid">
+                <div class="compare-card before">
+                    <div class="compare-header">
+                        <h3>Chưa dùng Atlas</h3>
+                        <span class="badge-red">Vấn đề</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Draw Calls (Lệnh vẽ)</span>
+                        <span class="stat-value text-red">100</span>
+                    </div>
+                    <div class="stat-bar"><div class="fill red" style="width: 100%"></div></div>
+                    
+                    <div class="stat-row">
+                        <span class="stat-label">Số lượng File tải lên GPU</span>
+                        <span class="stat-value text-red">100 File</span>
+                    </div>
+                    <div class="stat-bar"><div class="fill red" style="width: 100%"></div></div>
+        
+                    <div class="stat-row">
+                        <span class="stat-label">Mức tiêu thụ CPU</span>
+                        <span class="stat-value text-red">Cao</span>
+                    </div>
+                </div>
+        
+                <div class="vs-badge">VS</div>
+        
+                <div class="compare-card after">
+                    <div class="compare-header">
+                        <h3>Đã dùng Atlas</h3>
+                        <span class="badge-green">Tối ưu</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Draw Calls (Lệnh vẽ)</span>
+                        <span class="stat-value text-green">1</span>
+                    </div>
+                    <div class="stat-bar"><div class="fill green" style="width: 5%"></div></div>
+                    
+                    <div class="stat-row">
+                        <span class="stat-label">Số lượng File tải lên GPU</span>
+                        <span class="stat-value text-green">1 File (Tổng hợp)</span>
+                    </div>
+                    <div class="stat-bar"><div class="fill green" style="width: 5%"></div></div>
+        
+                    <div class="stat-row">
+                        <span class="stat-label">Mức tiêu thụ CPU</span>
+                        <span class="stat-value text-green">Rất thấp</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="how-to">
+            <h2 class="section-title">Hướng dẫn thực hành: Từng bước một</h2>
+            <div class="timeline">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Kích hoạt Sprite Atlas</h3>
+                    <p>Vào <strong>Edit > Project Settings > Editor</strong> và đảm bảo <em>Sprite Packer Mode</em> đang được đặt là <strong>Sprite Atlas V2 (Enabled)</strong>.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Tạo Asset</h3>
+                    <p>Trong cửa sổ Project, click chuột phải và chọn <strong>Create > 2D > Sprite Atlas</strong>. Đặt một cái tên gợi nhớ cho atlas mới của bạn (ví dụ: <em>UI_Atlas</em>).</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Cấu hình cài đặt</h3>
+                    <p>Chọn Atlas vừa tạo. Trong cửa sổ Inspector, bạn có thể thiết lập các tùy chọn như <em>Allow Rotation</em> (Cho phép xoay) hoặc <em>Tight Packing</em> (Gói chặt) để tối ưu hóa không gian trống giữa các sprite.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Thêm đối tượng cần đóng gói</h3>
+                    <p>Tìm danh sách <strong>Objects for Packing</strong> trong Inspector. Click nút <strong>+</strong> để thêm từng sprite lẻ, hoặc chỉ cần kéo thả cả thư mục chứa các sprite của bạn vào danh sách này.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <h3>Xem trước kết quả</h3>
+                    <p>Click nút <strong>Pack Preview</strong> ở dưới cùng của Inspector. Unity sẽ tạo ra một bản đồ texture tổng hợp và bạn có thể xem trước kết quả ngay bên dưới nút đó.</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">6</div>
+                    <h3>Hoàn tất và Sử dụng</h3>
+                    <p>Xong rồi! Hãy sử dụng các sprite lẻ trong Scene giống hệt như trước đây. Unity sẽ tự động và thông minh tráo đổi chúng với texture của Atlas khi chạy game, giúp bạn tiết kiệm đáng kể số lượng draw calls.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Animate elements on scroll
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.card, .how-to, .do-card, .dont-card, .comparison-section').forEach((el, index) => {
+            if(el.classList.contains('card')) {
+                el.style.animationDelay = `${index * 0.1}s`;
+            }
+            observer.observe(el);
+        });
+
+        // Mouse glow effect
+        const glow = document.getElementById('glow');
+        document.addEventListener('mousemove', (e) => {
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
+    </script>
+</body>
+</html>
