@@ -400,7 +400,7 @@
                     <div class="step-content">
                         <h3>Thiết lập Ánh sáng Môi trường (Global Light)</h3>
                         <p>Mặc định sau khi bật URP 2D, Scene của bạn có thể sẽ tối đen. Bạn cần một nguồn sáng nền.</p>
-                        <p>Ở cửa sổ Hierarchy, Click chuột phải chọn <span class="path-box">Light > 2D > Global Light 2D</span>.</p>
+                        <p>Ở cửa sổ Hierarchy, Click chuột phải chọn <span class="path-box">Light > Global Light 2D</span>.</p>
                         <p>Nguồn sáng này sẽ phủ khắp toàn bộ Scene. Trong tab Inspector, bạn có thể chỉnh <strong>Color</strong> (Màu sắc) và <strong>Intensity</strong> (Cường độ, ví dụ 0.5 cho cảnh đêm, 1.0 cho ban ngày).</p>
                     </div>
                 </div>
@@ -410,7 +410,7 @@
                     <div class="step-content">
                         <h3>Thêm Ánh sáng Cục bộ (Point/Freeform Light)</h3>
                         <p>Bây giờ là phần thú vị nhất, tạo điểm nhấn ánh sáng!</p>
-                        <p>Trong Hierarchy, Click chuột phải chọn <span class="path-box">Light > 2D > Point Light 2D</span>.</p>
+                        <p>Trong Hierarchy, Click chuột phải chọn <span class="path-box">Light > Spot Light 2D</span> (hoặc Sprite Light 2D).</p>
                         <p>Kéo điểm sáng này lại gần các nhân vật hoặc đồ vật (như ngọn nến, đuốc). Trong Inspector, điều chỉnh <strong>Outer Radius</strong> (Bán kính tỏa sáng) và <strong>Intensity</strong> để có ánh sáng đẹp mắt.</p>
                     </div>
                 </div>
@@ -420,7 +420,7 @@
                     <div class="step-content">
                         <h3>Kích hoạt Bóng đổ (2D Shadows)</h3>
                         <p>Để ánh sáng bị cản lại và tạo ra bóng đen phía sau vật thể:</p>
-                        <p>1. Chọn đèn Point Light 2D bạn vừa tạo, trong Inspector bật (tick) vào ô <strong>Shadows</strong> và chỉnh <strong>Strength</strong> lên khoảng 0.7.</p>
+                        <p>1. Chọn đèn Spot Light 2D bạn vừa tạo, trong Inspector bật (tick) vào ô <strong>Shadows</strong> và chỉnh <strong>Strength</strong> lên khoảng 0.7.</p>
                         <p>2. Chọn vật thể Sprite mà bạn muốn nó hắt bóng (ví dụ: Bức tường, Thùng gỗ). Nhấn <strong>Add Component</strong> và thêm <span class="highlight">Shadow Caster 2D</span>.</p>
                         <p>Ngay lập tức, bạn sẽ thấy bóng đổ xuất hiện dựa theo vị trí của ánh sáng so với vật thể!</p>
                     </div>
