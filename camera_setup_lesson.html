@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Hướng dẫn thiết lập Camera 2D Orthographic, Pixel Perfect Camera và cấu hình cho các thể loại game 2D phổ biến.">
+    <title>Unity 2D Camera Setup | Bài học Tương tác</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #020617;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-1: #34d399; /* Emerald */
+            --accent-2: #059669; /* Dark Emerald */
+            --accent-gradient: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --glass-blur: blur(16px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 80% 20%, rgba(52, 211, 153, 0.05), transparent 30%),
+                radial-gradient(circle at 20% 80%, rgba(5, 150, 105, 0.08), transparent 30%);
+            background-attachment: fixed;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        /* Hero Section */
+        header {
+            text-align: center;
+            margin-bottom: 5rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            background: rgba(52, 211, 153, 0.1);
+            color: var(--accent-1);
+            font-weight: 500;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(52, 211, 153, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+        }
+
+        .hero-desc {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Section Styling */
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            color: #fff;
+        }
+
+        .content-card {
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 3rem;
+            margin-bottom: 4rem;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        /* Orthographic vs Perspective */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .comp-box {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .comp-box:hover {
+            border-color: rgba(52, 211, 153, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .comp-box h4 {
+            color: var(--accent-1);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Pixel Perfect Section */
+        .highlight-box {
+            background: rgba(52, 211, 153, 0.05);
+            border-left: 4px solid var(--accent-1);
+            padding: 1.5rem;
+            border-radius: 0 12px 12px 0;
+            margin: 1.5rem 0;
+        }
+
+        .code-inline {
+            background: rgba(255,255,255,0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+            color: var(--accent-1);
+        }
+
+        /* Genre Configuration Grid */
+        .genre-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .genre-card {
+            background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .genre-card:hover {
+            border-color: var(--accent-1);
+            box-shadow: 0 10px 30px rgba(52, 211, 153, 0.1);
+        }
+
+        .genre-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent-gradient);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .genre-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .genre-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .genre-card h3 {
+            font-size: 1.5rem;
+            color: #fff;
+            margin-bottom: 1rem;
+        }
+
+        .genre-card ul {
+            list-style: none;
+            color: var(--text-muted);
+        }
+
+        .genre-card ul li {
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .genre-card ul li::before {
+            content: '→';
+            color: var(--accent-1);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: slideUp 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mouse glow */
+        #glow {
+            position: fixed;
+            width: 40vw;
+            height: 40vw;
+            background: radial-gradient(circle, rgba(52, 211, 153, 0.1) 0%, rgba(0,0,0,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            transition: width 0.2s, height 0.2s;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 3rem; }
+            .comparison-grid { grid-template-columns: 1fr; }
+            .content-card { padding: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div id="glow"></div>
+
+    <div class="container">
+        <header>
+            <div class="badge">Thiết lập Project 2D</div>
+            <h1>2D Camera Setup & Pixel Perfect</h1>
+            <p class="hero-desc">Làm chủ góc nhìn trong game 2D. Tìm hiểu cách thiết lập Camera Orthographic, xử lý lỗi mờ hình với Pixel Perfect, và các chuẩn cấu hình cho từng dòng game.</p>
+        </header>
+
+        <!-- Section 1: Orthographic -->
+        <section class="content-card animate-in">
+            <h2 class="section-title">1. Camera Orthographic là gì?</h2>
+            <p style="text-align: center; color: var(--text-muted); max-width: 800px; margin: 0 auto 2rem;">
+                Trong Unity, thuộc tính <strong>Projection</strong> của Camera quyết định cách thế giới được hiển thị lên màn hình. Với game 2D, chúng ta bắt buộc phải sử dụng chế độ <strong>Orthographic</strong>.
+            </p>
+
+            <div class="comparison-grid">
+                <div class="comp-box">
+                    <h4>👁️ Perspective (Phối cảnh)</h4>
+                    <p>Dành cho game 3D. Các vật thể ở xa camera sẽ trông nhỏ hơn, tạo ra cảm giác về chiều sâu không gian chân thực.</p>
+                </div>
+                <div class="comp-box" style="border-color: var(--accent-1); background: rgba(52, 211, 153, 0.05);">
+                    <h4>📏 Orthographic (Trực giao)</h4>
+                    <p><strong>Bắt buộc cho 2D.</strong> Kích thước vật thể giữ nguyên bất kể khoảng cách tới Camera. Hình ảnh luôn hiển thị phẳng (Flat).</p>
+                </div>
+            </div>
+
+            <div class="highlight-box" style="margin-top: 2rem;">
+                <h4 style="color: var(--accent-1); margin-bottom: 0.5rem;">Cài đặt thuộc tính "Size" (Orthographic Size)</h4>
+                <p>Khác với 3D dùng góc nhìn (FOV), Camera 2D dùng <strong>Size</strong> để phóng to/thu nhỏ. Công thức chuẩn tính Size là: <br><br>
+                <span class="code-inline">Orthographic Size = Chiều cao màn hình (Pixels) / (2 * Pixels Per Unit)</span><br><br>
+                <em>Ví dụ:</em> Màn hình cao 1080px, Sprite bạn để PPU là 100. <br>
+                => Size = 1080 / (2 * 100) = <strong>5.4</strong>. Hãy điền số 5.4 vào mục Size của Camera!</p>
+            </div>
+        </section>
+
+        <!-- Section 2: Pixel Perfect Camera -->
+        <section class="content-card animate-in" style="animation-delay: 0.2s">
+            <h2 class="section-title">2. Pixel Perfect Camera (Game Pixel Art)</h2>
+            <p style="margin-bottom: 1.5rem;">Nếu bạn làm game thể loại <strong>Pixel Art</strong> (vẽ bằng các điểm ảnh nhỏ như game Mario cũ), bạn sẽ gặp các lỗi cực kỳ khó chịu như:</p>
+            <ul style="list-style: none; margin-bottom: 2rem; color: #cbd5e1;">
+                <li>❌ <strong>Jittering:</strong> Hình ảnh giật cục khi nhân vật di chuyển chậm.</li>
+                <li>❌ <strong>Blurring:</strong> Viền của pixel bị mờ nhòe do Unity tự động nội suy (Anti-aliasing).</li>
+                <li>❌ <strong>Distortion:</strong> Các điểm ảnh hình vuông bị bóp méo thành hình chữ nhật.</li>
+            </ul>
+
+            <h3 style="color: var(--accent-1); margin-bottom: 1rem;">Cách khắc phục:</h3>
+            <div class="highlight-box">
+                <p><strong>Bước 1:</strong> Tắt Anti-aliasing trong Project Settings > Quality.</p>
+                <p><strong>Bước 2:</strong> Vào Package Manager cài đặt gói <strong>2D Pixel Perfect</strong>.</p>
+                <p><strong>Bước 3:</strong> Click vào Main Camera, nhấn <em>Add Component</em> > <strong>Pixel Perfect Camera</strong>.</p>
+            </div>
+
+            <h4 style="margin: 2rem 0 1rem; color: #fff;">Các thông số cần chỉnh trong Component Pixel Perfect:</h4>
+            <ul style="padding-left: 1.5rem; color: var(--text-muted); line-height: 1.8;">
+                <li><span class="code-inline">Assets Pixels Per Unit (PPU):</span> Khai báo thông số PPU chung của toàn bộ file ảnh trong game của bạn (thường là 16, 32 hoặc 64).</li>
+                <li><span class="code-inline">Reference Resolution:</span> Độ phân giải gốc mà bạn muốn game hiển thị (VD: 320x180 cho game GBA cổ điển). Camera sẽ tự scale lên màn hình thật (như 1920x1080).</li>
+                <li><span class="code-inline">Upscale Render Texture:</span> Rất quan trọng! Tùy chọn này giúp game render ở độ phân giải nhỏ trước, rồi mới phóng to (upscale) giữ nguyên độ sắc nét của Pixel.</li>
+                <li><span class="code-inline">Pixel Snapping:</span> Giúp camera và vật thể luôn bám (snap) vào lưới điểm ảnh, tránh việc tọa độ vật thể bị lẻ (vd: X = 1.05) gây xé hình.</li>
+            </ul>
+        </section>
+
+        <!-- Section 3: Genre Configuration -->
+        <section class="content-card animate-in" style="animation-delay: 0.4s">
+            <h2 class="section-title">3. Cấu hình Camera cho các Dòng Game Phổ biến</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 3rem;">Hầu hết các game 2D hiện đại đều sử dụng <strong>Cinemachine 2D</strong> thay vì tự viết script điều khiển camera. Dưới đây là cấu hình chuẩn cho từng thể loại khi kết hợp với Cinemachine Virtual Camera.</p>
+
+            <div class="genre-grid">
+                <!-- Platformer -->
+                <div class="genre-card">
+                    <div class="genre-icon">🏃</div>
+                    <h3>2D Platformer</h3>
+                    <p style="color: #64748b; margin-bottom: 1rem; font-size: 0.9rem;">(VD: Mario, Hollow Knight, Celeste)</p>
+                    <ul>
+                        <li><strong>Body:</strong> Framing Transposer.</li>
+                        <li><strong>Screen X / Y:</strong> X thường đặt lệch (VD: 0.3) để người chơi nhìn thấy khoảng trống phía trước mặt nhân vật nhiều hơn là phía sau lưng.</li>
+                        <li><strong>Dead Zone:</strong> Cần thiết lập Dead Zone (vùng chết) cỡ nhỏ ở trung tâm. Nhờ đó nhân vật nhảy nhẹ hoặc đi lại một quãng ngắn, Camera sẽ không bị giật theo.</li>
+                        <li><strong>Damping:</strong> Tăng X/Y Damping lên khoảng 1.5 - 2.0 để camera bay lướt mượt mà.</li>
+                    </ul>
+                </div>
+
+                <!-- Top-Down RPG -->
+                <div class="genre-card">
+                    <div class="genre-icon">🗺️</div>
+                    <h3>Top-Down RPG</h3>
+                    <p style="color: #64748b; margin-bottom: 1rem; font-size: 0.9rem;">(VD: Zelda, Stardew Valley, Pokemon)</p>
+                    <ul>
+                        <li><strong>Body:</strong> Framing Transposer.</li>
+                        <li><strong>Screen X / Y:</strong> Luôn giữ chính giữa (0.5 / 0.5) vì nhân vật cần quan sát tứ phía bằng nhau.</li>
+                        <li><strong>Dead Zone:</strong> Rất nhỏ hoặc bằng 0, vì người chơi cần camera phản hồi ngay lập tức khi di chuyển quanh bản đồ.</li>
+                        <li><strong>Extensions (Bắt buộc):</strong> Phải thêm thành phần <em>Cinemachine Confiner 2D</em>. Vẽ một Polygon Collider 2D bọc quanh bản đồ, gán vào Confiner để Camera không bao giờ trượt ra ngoài vùng đen vô tận (vượt biên giới).</li>
+                    </ul>
+                </div>
+
+                <!-- Mobile Portrait -->
+                <div class="genre-card">
+                    <div class="genre-icon">📱</div>
+                    <h3>Mobile Arcade / Endless</h3>
+                    <p style="color: #64748b; margin-bottom: 1rem; font-size: 0.9rem;">(VD: Flappy Bird, Doodle Jump - Màn hình dọc)</p>
+                    <ul>
+                        <li><strong>Vấn đề Màn hình:</strong> Tỉ lệ điện thoại rất đa dạng (16:9, 18:9, 19.5:9).</li>
+                        <li><strong>Camera Size:</strong> Không để tĩnh. Cần viết Script để Camera tính toán lại Orthographic Size dựa trên chiều ngang (Screen.width) để đảm bảo hai viền trái/phải màn hình không bị cắt phạm vào Gameplay.</li>
+                        <li><strong>Chuyển động:</strong> Thường di chuyển tự động (Auto-scroll) theo trục Y bằng script tĩnh, hoặc track theo nhân vật nhưng khóa trục X.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.content-card').forEach((el) => {
+            observer.observe(el);
+        });
+
+        const glow = document.getElementById('glow');
+        document.addEventListener('mousemove', (e) => {
+            glow.style.left = e.clientX + 'px';
+            glow.style.top = e.clientY + 'px';
+        });
+    </script>
+</body>
+</html>
