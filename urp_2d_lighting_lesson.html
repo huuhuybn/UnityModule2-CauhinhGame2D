@@ -283,6 +283,49 @@
             border: 1px solid rgba(255,255,255,0.1);
         }
 
+        /* Inspector Box */
+        .inspector-box {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-radius: 0 12px 12px 0;
+            border: 1px solid rgba(251, 191, 36, 0.1);
+            border-left: 4px solid var(--accent-1);
+        }
+
+        .prop-list {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 1rem;
+        }
+
+        .prop-list li {
+            margin-bottom: 1rem;
+            color: #e4e4e7;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .prop-list li::before {
+            content: '•';
+            color: var(--accent-1);
+            position: absolute;
+            left: 0;
+            font-size: 1.2rem;
+            line-height: 1.2;
+        }
+
+        .prop-list strong {
+            color: #fff;
+            background: rgba(255,255,255,0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+            margin-right: 0.3rem;
+            display: inline-block;
+        }
+
         /* Animations */
         @keyframes fadeInDown {
             from { opacity: 0; transform: translateY(-30px); }
@@ -408,10 +451,23 @@
                 <div class="step">
                     <div class="step-number">5</div>
                     <div class="step-content">
-                        <h3>Thêm Ánh sáng Cục bộ (Point/Freeform Light)</h3>
+                        <h3>Thêm Ánh sáng Cục bộ (Spot Light 2D)</h3>
                         <p>Bây giờ là phần thú vị nhất, tạo điểm nhấn ánh sáng!</p>
-                        <p>Trong Hierarchy, Click chuột phải chọn <span class="path-box">Light > Spot Light 2D</span> (hoặc Sprite Light 2D).</p>
-                        <p>Kéo điểm sáng này lại gần các nhân vật hoặc đồ vật (như ngọn nến, đuốc). Trong Inspector, điều chỉnh <strong>Outer Radius</strong> (Bán kính tỏa sáng) và <strong>Intensity</strong> để có ánh sáng đẹp mắt.</p>
+                        <p>Trong Hierarchy, Click chuột phải chọn <span class="path-box">Light > Spot Light 2D</span>.</p>
+                        <p>Kéo điểm sáng này lại gần các nhân vật hoặc đồ vật (như ngọn nến, đuốc).</p>
+                        
+                        <div class="inspector-box">
+                            <h4 style="color: var(--accent-1); font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem;">
+                                <span>🔍</span> Giải thích các thông số trong Inspector:
+                            </h4>
+                            <ul class="prop-list">
+                                <li><strong>Intensity:</strong> Cường độ sáng. Giá trị càng cao, đèn càng chói.</li>
+                                <li><strong>Target Sorting Layers:</strong> Giới hạn ánh sáng chỉ chiếu lên các Layer được chọn. Rất hữu ích để đánh lừa thị giác (ví dụ: đèn chỉ chiếu sáng nhân vật mà không làm sáng hình nền).</li>
+                                <li><strong>Radius (Inner / Outer):</strong> <em>Inner</em> là bán kính lõi (vùng rực rỡ nhất), <em>Outer</em> là bán kính tối đa mà ánh sáng vươn tới được trước khi tắt hẳn.</li>
+                                <li><strong>Inner / Outer Spot Angle:</strong> Góc tỏa sáng. Mặc định <strong>360 độ</strong> sẽ tỏa tròn tứ phía. Nếu bạn giảm góc này (ví dụ 45 độ), ánh sáng sẽ bị thu hẹp lại thành hình nón giống như đèn pin.</li>
+                                <li><strong>Falloff Strength:</strong> Tốc độ giảm dần (mờ dần) của ánh sáng khi lan từ vùng Inner ra vùng Outer.</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
