@@ -153,73 +153,69 @@
             color: var(--accent-1);
         }
 
-        /* Genre Configuration Grid */
-        .genre-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-        }
-
-        .genre-card {
+        /* Genre Configuration Detail */
+        .genre-detail-card {
             background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 20px;
-            padding: 2rem;
-            position: relative;
+            margin-bottom: 2.5rem;
             overflow: hidden;
             transition: all 0.3s ease;
         }
 
-        .genre-card:hover {
-            border-color: var(--accent-1);
+        .genre-detail-card:hover {
+            border-color: rgba(52, 211, 153, 0.4);
             box-shadow: 0 10px 30px rgba(52, 211, 153, 0.1);
         }
 
-        .genre-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: var(--accent-gradient);
-            transform: scaleX(0);
-            transform-origin: left;
-            transition: transform 0.3s ease;
-        }
-
-        .genre-card:hover::before {
-            transform: scaleX(1);
+        .genre-header {
+            background: rgba(0,0,0,0.4);
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
         .genre-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+            font-size: 3.5rem;
         }
 
-        .genre-card h3 {
-            font-size: 1.5rem;
-            color: #fff;
-            margin-bottom: 1rem;
+        .genre-header h3 {
+            font-size: 1.8rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
         }
-
-        .genre-card ul {
-            list-style: none;
+        
+        .genre-header p {
             color: var(--text-muted);
         }
 
-        .genre-card ul li {
-            margin-bottom: 0.8rem;
-            padding-left: 1.5rem;
-            position: relative;
+        .genre-steps {
+            padding: 2.5rem;
         }
 
-        .genre-card ul li::before {
-            content: '→';
+        .genre-steps h4 {
+            color: #fff;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .genre-steps ol {
+            color: var(--text-muted);
+            padding-left: 1.5rem;
+        }
+
+        .genre-steps ol li {
+            margin-bottom: 1rem;
+            padding-left: 0.5rem;
+            line-height: 1.8;
+        }
+
+        .genre-steps ol li::marker {
             color: var(--accent-1);
-            position: absolute;
-            left: 0;
             font-weight: bold;
+            font-size: 1.1rem;
         }
 
         /* Animations */
@@ -326,43 +322,66 @@
             <h2 class="section-title">3. Cấu hình Camera cho các Dòng Game Phổ biến</h2>
             <p style="text-align: center; color: var(--text-muted); margin-bottom: 3rem;">Hầu hết các game 2D hiện đại đều sử dụng <strong>Cinemachine 2D</strong> thay vì tự viết script điều khiển camera. Dưới đây là cấu hình chuẩn cho từng thể loại khi kết hợp với Cinemachine Virtual Camera.</p>
 
-            <div class="genre-grid">
-                <!-- Platformer -->
-                <div class="genre-card">
+            <div class="genre-detail-card">
+                <div class="genre-header">
                     <div class="genre-icon">🏃</div>
-                    <h3>2D Platformer</h3>
-                    <p style="color: #64748b; margin-bottom: 1rem; font-size: 0.9rem;">(VD: Mario, Hollow Knight, Celeste)</p>
-                    <ul>
-                        <li><strong>Body:</strong> Framing Transposer.</li>
-                        <li><strong>Screen X / Y:</strong> X thường đặt lệch (VD: 0.3) để người chơi nhìn thấy khoảng trống phía trước mặt nhân vật nhiều hơn là phía sau lưng.</li>
-                        <li><strong>Dead Zone:</strong> Cần thiết lập Dead Zone (vùng chết) cỡ nhỏ ở trung tâm. Nhờ đó nhân vật nhảy nhẹ hoặc đi lại một quãng ngắn, Camera sẽ không bị giật theo.</li>
-                        <li><strong>Damping:</strong> Tăng X/Y Damping lên khoảng 1.5 - 2.0 để camera bay lướt mượt mà.</li>
-                    </ul>
+                    <div>
+                        <h3>2D Platformer (Mario, Hollow Knight)</h3>
+                        <p>Camera lướt theo nhân vật một cách mượt mà, không rung lắc khi nhảy nhỏ và luôn giữ tầm nhìn rộng ở phía trước mặt.</p>
+                    </div>
                 </div>
+                <div class="genre-steps">
+                    <h4>🛠️ Các bước thực hành (Dùng Cinemachine):</h4>
+                    <ol>
+                        <li>Cài đặt package <strong>Cinemachine</strong> từ Package Manager (nếu chưa có).</li>
+                        <li>Trên thanh menu chính của Unity, chọn <span class="path-box">Cinemachine > Create 2D Camera</span>. Một Virtual Camera (vcam) sẽ được tạo ra trong Hierarchy.</li>
+                        <li>Kéo thả nhân vật của bạn vào ô <strong>Follow</strong> của vcam.</li>
+                        <li>Ở mục <strong>Body</strong> của vcam, đảm bảo đang chọn <span class="highlight">Framing Transposer</span>.</li>
+                        <li>Chỉnh <strong>Tracked Object Offset</strong>: X = 2 (Giúp camera lệch về phía trước, mở rộng tầm nhìn cho người chơi chuẩn bị nhảy hoặc né đạn).</li>
+                        <li>Chỉnh <strong>Dead Zone Width/Height</strong>: Khoảng 0.1 tới 0.2. (Tạo ra một vùng an toàn ở giữa màn hình. Khi nhân vật di chuyển nhẹ trong vùng này, camera đứng yên, giúp tránh nhức mắt).</li>
+                        <li>Chỉnh <strong>X/Y Damping</strong>: Đặt ở mức 1.5 (Tạo độ trễ giúp camera bay lướt theo nhân vật một cách mượt mà như phim điện ảnh).</li>
+                    </ol>
+                </div>
+            </div>
 
-                <!-- Top-Down RPG -->
-                <div class="genre-card">
+            <div class="genre-detail-card">
+                <div class="genre-header">
                     <div class="genre-icon">🗺️</div>
-                    <h3>Top-Down RPG</h3>
-                    <p style="color: #64748b; margin-bottom: 1rem; font-size: 0.9rem;">(VD: Zelda, Stardew Valley, Pokemon)</p>
-                    <ul>
-                        <li><strong>Body:</strong> Framing Transposer.</li>
-                        <li><strong>Screen X / Y:</strong> Luôn giữ chính giữa (0.5 / 0.5) vì nhân vật cần quan sát tứ phía bằng nhau.</li>
-                        <li><strong>Dead Zone:</strong> Rất nhỏ hoặc bằng 0, vì người chơi cần camera phản hồi ngay lập tức khi di chuyển quanh bản đồ.</li>
-                        <li><strong>Extensions (Bắt buộc):</strong> Phải thêm thành phần <em>Cinemachine Confiner 2D</em>. Vẽ một Polygon Collider 2D bọc quanh bản đồ, gán vào Confiner để Camera không bao giờ trượt ra ngoài vùng đen vô tận (vượt biên giới).</li>
-                    </ul>
+                    <div>
+                        <h3>Top-Down RPG (Zelda, Stardew Valley)</h3>
+                        <p>Camera phải luôn ở vị trí trung tâm nhân vật, phản hồi lập tức và tuyệt đối không bao giờ được quay ra ngoài biên giới bản đồ đen xì.</p>
+                    </div>
                 </div>
+                <div class="genre-steps">
+                    <h4>🛠️ Các bước thực hành (Dùng Cinemachine):</h4>
+                    <ol>
+                        <li>Tạo Cinemachine 2D Camera tương tự như trên và gán nhân vật vào ô <strong>Follow</strong>.</li>
+                        <li>Ở mục <strong>Body</strong> chọn <span class="highlight">Framing Transposer</span>.</li>
+                        <li>Chỉnh <strong>Screen X / Y</strong>: Giữ nguyên 0.5 / 0.5 (Luôn giữ nhân vật ở chính giữa màn hình do góc nhìn từ trên xuống cần quan sát tứ phía).</li>
+                        <li>Chỉnh <strong>Dead Zone</strong>: Chỉnh về 0 hoặc rất nhỏ (Vì game RPG cần camera bám sát nhân vật ngay khi nhấn nút di chuyển).</li>
+                        <li><strong>Chặn biên giới Camera:</strong> Cuộn xuống dưới cùng của vcam, phần <em>Extensions</em>, chọn <span class="highlight">CinemachineConfiner2D</span>.</li>
+                        <li>Tạo một GameObject trống, thêm component <em>Polygon Collider 2D</em>, đánh dấu tick vào <strong>Is Trigger</strong>, sau đó vẽ bao quanh khu vực bản đồ của bạn.</li>
+                        <li>Kéo thả GameObject vừa tạo vào ô <strong>Bounding Shape 2D</strong> của Confiner. Vậy là Camera sẽ luôn bị nhốt bên trong bản đồ!</li>
+                    </ol>
+                </div>
+            </div>
 
-                <!-- Mobile Portrait -->
-                <div class="genre-card">
+            <div class="genre-detail-card">
+                <div class="genre-header">
                     <div class="genre-icon">📱</div>
-                    <h3>Mobile Arcade / Endless</h3>
-                    <p style="color: #64748b; margin-bottom: 1rem; font-size: 0.9rem;">(VD: Flappy Bird, Doodle Jump - Màn hình dọc)</p>
-                    <ul>
-                        <li><strong>Vấn đề Màn hình:</strong> Tỉ lệ điện thoại rất đa dạng (16:9, 18:9, 19.5:9).</li>
-                        <li><strong>Camera Size:</strong> Không để tĩnh. Cần viết Script để Camera tính toán lại Orthographic Size dựa trên chiều ngang (Screen.width) để đảm bảo hai viền trái/phải màn hình không bị cắt phạm vào Gameplay.</li>
-                        <li><strong>Chuyển động:</strong> Thường di chuyển tự động (Auto-scroll) theo trục Y bằng script tĩnh, hoặc track theo nhân vật nhưng khóa trục X.</li>
-                    </ul>
+                    <div>
+                        <h3>Mobile Arcade (Flappy Bird, Màn hình dọc)</h3>
+                        <p>Giải quyết triệt để bài toán: Tỉ lệ màn hình điện thoại người chơi rất đa dạng (16:9, 18:9, 21:9), làm sao để hai bên hông game không bị cắt xén?</p>
+                    </div>
+                </div>
+                <div class="genre-steps">
+                    <h4>🛠️ Các bước thực hành (Viết Script tự động):</h4>
+                    <ol>
+                        <li>Không điền thông số <em>Size</em> tĩnh trong Inspector. Nhấn Add Component trên Main Camera để tạo một C# script mới tên là <code>CameraScaler.cs</code>.</li>
+                        <li>Mở script lên. Khai báo độ phân giải Width gốc của game (VD: 1080).</li>
+                        <li>Trong hàm <code>Start()</code> hoặc <code>Update()</code>, dùng đoạn code sau để tự động ép Size theo chiều ngang: <br><br> <span class="code-inline">Camera.main.orthographicSize = (độ rộng chuẩn / Screen.width) * Screen.height / (2 * PPU);</span></li>
+                        <li>Với các game Endless Runner tự động cuộn (Auto-scroll), hãy cấu hình <strong>Cinemachine 2D</strong> theo nhân vật nhưng chỉnh <em>Y Damping</em> lên mức rất cao, hoặc khóa hoàn toàn trục Y trong phần Lock Axis để tránh camera bị giật lên xuống khi chim bay/rơi.</li>
+                    </ol>
                 </div>
             </div>
         </section>
